@@ -1,0 +1,321 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "FastAPI",
+        "version": "0.1.0"
+    },
+    "paths": {
+        "/nodes/": {
+            "get": {
+                "tags": [
+                    "nodes"
+                ],
+                "summary": "Get Nodes",
+                "description": "Get all nodes in the topology.\nReturns a list of all nodes.",
+                "operationId": "get_nodes_nodes__get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "nodes"
+                ],
+                "summary": "Add Node",
+                "description": "Add a node to the topology.\nIf the node already exists, it raises a 400 error.",
+                "operationId": "add_node_nodes__post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Node"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/nodes/{site_id}": {
+            "get": {
+                "tags": [
+                    "nodes"
+                ],
+                "summary": "Get Node",
+                "description": "Get a specific node by site_id.\nIf the node does not exist, it raises a 404 error.",
+                "operationId": "get_node_nodes__site_id__get",
+                "parameters": [
+                    {
+                        "name": "site_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Site Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "nodes"
+                ],
+                "summary": "Delete Node",
+                "description": "Delete a node from the topology.\nIf the node does not exist, it raises a 404 error.",
+                "operationId": "delete_node_nodes__site_id__delete",
+                "parameters": [
+                    {
+                        "name": "site_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Site Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/links/": {
+            "get": {
+                "tags": [
+                    "links"
+                ],
+                "summary": "Get Links",
+                "description": "Get all links in the topology.\nReturns a list of all links.",
+                "operationId": "get_links_links__get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "links"
+                ],
+                "summary": "Add Link",
+                "description": "Add a link between two nodes.\nThe source and destination nodes must already exist in the nodes database.\nIf the link already exists, it will get updated.",
+                "operationId": "add_link_links__post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Link"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "Link": {
+                "properties": {
+                    "source": {
+                        "type": "string",
+                        "title": "Source"
+                    },
+                    "destination": {
+                        "type": "string",
+                        "title": "Destination"
+                    },
+                    "latency_ms": {
+                        "type": "number",
+                        "title": "Latency Ms"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "source",
+                    "destination",
+                    "latency_ms"
+                ],
+                "title": "Link"
+            },
+            "Node": {
+                "properties": {
+                    "site_id": {
+                        "type": "string",
+                        "title": "Site Id"
+                    },
+                    "cpu": {
+                        "type": "integer",
+                        "title": "Cpu"
+                    },
+                    "mem": {
+                        "type": "integer",
+                        "title": "Mem"
+                    },
+                    "storage": {
+                        "type": "integer",
+                        "title": "Storage"
+                    },
+                    "iml_endpoint": {
+                        "type": "string",
+                        "title": "Iml Endpoint"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "site_id",
+                    "cpu",
+                    "mem",
+                    "storage",
+                    "iml_endpoint"
+                ],
+                "title": "Node"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "nodes",
+            "description": "Operations with nodes in the topology"
+        },
+        {
+            "name": "links",
+            "description": "Operations with links in the topology"
+        }
+    ]
+}
