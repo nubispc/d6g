@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: servicecatalog-creds
+  namespace: desire6g-smo
+type: Opaque
+data:
+  GITHUB_ORG: bnViaXNwYwo=
+  GITHUB_REPO: ZDZnLXNjLXN0b3JlCg==
+  GITHUB_ACCESS_TOKEN: ZGVkYWN0ZWQK

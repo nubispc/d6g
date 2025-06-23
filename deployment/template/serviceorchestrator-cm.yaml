@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: so-env
+  namespace: desire6g-smo
+data:
+  RABBITMQ_HOST: rabbitmq.desire6g-smo
+  SERVICE_NAME_ID: main_id
+  SERVICE_NAME: main
+  FINAL_TOPIC: output_topic
+  SERVICE_CATALOG: service-catalog.desire6g-smo
+  TOPOLOGY_ENDPOINT: topology.desire6g-smo
+  IML_ENDPOINT: http://10.5.1.21:5000/iml/yaml/deploy

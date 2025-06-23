@@ -23,3 +23,7 @@ images: so sc oe topology
 	@echo "- harbor.nbfc.io/desire6g/desire6g-topology:$(TAG)"
 
 # TODO: Add a target to replace the tag in the deployment files
+deploy:
+	@rm -fr deployment/deploy
+	@cp -r deployment/template deployment/deploy
+	@sed -i "s|DEFAULTTAG|$(TAG)|g" deployment/deploy/*.yaml

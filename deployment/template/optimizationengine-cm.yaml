@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oe-env
+  namespace: desire6g-smo
+data:
+  RABBITMQ_HOST: rabbitmq.desire6g-smo
+  INPUT_TOPIC: input_topic
+  OUTPUT_TOPIC: output_topic
+  KAFKA_BOOTSTRAP_SERVERS: localhost:9092 # Not sure if we need to deploy Kafka
+  SITE: SITEID1
+  TOPOLOGY_MODULE_HOST: topology.desire6g-smo
+  TOPOLOGY_MODULE_PORT: "8000"
+  SERVICE_CATALOG_HOST: desire6g-service-catalog.desire6g-smo
+  SERVICE_CATALOG_PORT: "8000"
