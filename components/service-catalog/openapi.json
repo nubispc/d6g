@@ -83,13 +83,13 @@
                 }
             }
         },
-        "/catalog/{file_name}": {
+        "/retrieve/{file_name}": {
             "get": {
                 "tags": [
                     "catalog"
                 ],
                 "summary": "Get File",
-                "operationId": "get_file_catalog__file_name__get",
+                "operationId": "get_file_retrieve__file_name__get",
                 "parameters": [
                     {
                         "name": "file_name",
@@ -121,7 +121,9 @@
                         }
                     }
                 }
-            },
+            }
+        },
+        "/catalog/{file_name}": {
             "delete": {
                 "tags": [
                     "catalog"

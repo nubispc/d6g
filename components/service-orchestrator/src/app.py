@@ -142,7 +142,7 @@ async def get_request_by_id(request_id: str):
 
 
 def download_file_from_catalog(file_name: str) -> str | None:
-    url = f'{SERVICE_CATALOG_URL}/{file_name}'
+    url = f'{SERVICE_CATALOG_URL}/retrieve/{file_name}'
     response = requests.get(url)
     if response.status_code == 200:
         return response.json()["file_content"]
