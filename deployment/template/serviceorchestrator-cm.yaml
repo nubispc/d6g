@@ -5,10 +5,13 @@ metadata:
   name: so-env
   namespace: desire6g-smo
 data:
+  MESSAGING_SYSTEM: rabbitmq
   RABBITMQ_HOST: rabbitmq.desire6g-smo
-  SERVICE_NAME_ID: main_id
-  SERVICE_NAME: main
+  INPUT_TOPIC: input_topic
   FINAL_TOPIC: output_topic
-  SERVICE_CATALOG: service-catalog.desire6g-smo
-  TOPOLOGY_ENDPOINT: topology.desire6g-smo
-  IML_ENDPOINT: http://10.5.1.21:5000/iml/yaml/deploy
+  TOPOLOGY_MODULE_HOST: topology.desire6g-smo
+  TOPOLOGY_MODULE_PORT: "8000"
+  SERVICE_CATALOG_HOST: desire6g-service-catalog.desire6g-smo
+  SERVICE_CATALOG_PORT: "8000"
+  KAFKA_BOOTSTRAP_SERVERS: "none"
+  RABBITMQ_MAX_RETRIES: "20"
