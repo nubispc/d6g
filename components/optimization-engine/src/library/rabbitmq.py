@@ -20,7 +20,9 @@ def clear_screen():
 
 async def process_message(message: IncomingMessage, message_counter):
     try:
-        parsed_yaml = yaml.safe_load(message.body)
+        body = message.body.decode('utf-8')
+        body = base64.b64decode(body).decode('utf-8')
+        parsed_yaml = yaml.safe_load(body)
         # clear_screen()
         # logger.info(f"Processing message {message_counter}...")
         logger.info("Received service optimization request number:" + str(message_counter) + ", with ns instance id:" + parsed_yaml["lnsd"]["ns-instance-id"]) # parsed_yaml["local-nsd"]["info"]["ns"]["id"])
@@ -34,6 +36,7 @@ async def process_message(message: IncomingMessage, message_counter):
         # ----- Service Request -----
 
         modified_message = optimization_engine.optimization_engine(message.body, d6g_site)
+        logger.info("Optimization Engine returned a modified service request.")
         if modified_message == -1:
             logger.error(f"Optimization Engine returned an error. Error during optimization pipeline.")
             # return yaml.dumps({"Error": "Error during optimization pipeline"})

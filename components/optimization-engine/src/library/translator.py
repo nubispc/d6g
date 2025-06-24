@@ -6,27 +6,40 @@ import networkx as nx
 import yaml
 import json
 import logging
+import base64
+import binascii
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def bytes2dict(data):
+def service2dict(service: bytes | str):
+    data = ""
+    if isinstance(service, bytes):
+        data = service.decode('utf-8')
+    elif isinstance(service, str):
+        data = service
     try:
-        data = json.loads(data.decode("utf-8"))
+        data = base64.b64decode(data).decode('utf-8')
+    except (binascii.Error, UnicodeDecodeError):
+        logger.info("Data is not base64 encoded")
+    if data == "":
+        raise ValueError("service variable is not str or bytes type.")
+    try:
+        return json.loads(data)
     except (json.JSONDecodeError, UnicodeDecodeError):
         pass
     try:
-        return yaml.safe_load(data.decode('utf-8'))
+        return yaml.safe_load(data)
     except (yaml.YAMLError, UnicodeDecodeError):
         pass
     raise ValueError("Data is not valid JSON or YAML format.")
-
+    
 def request2graph(service, functions):       
     try:
-        # If the service is a bytes object, decode it to a string and then parse as JSON.
-        if isinstance(service, bytes):
-            service = bytes2dict(service)
+        service = service2dict(service)
         # If the service is wrapped under a key (like "lnsd"), extract it.
+        logger.info("Service content: %s", service)
+        
         nsd = service.get("local-nsd", service)
         
         # Create an empty undirected graph.

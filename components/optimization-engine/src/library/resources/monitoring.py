@@ -27,7 +27,9 @@ def check_resources(merged_functions, site_resources):
     total_required_ram = 0
     total_required_storage = 0
 
+    logger.info("Merged functions content: %s", merged_functions)
     for key, func_list in merged_functions.items():
+        logger.info("Processing key: %s with functions: %s", key, func_list)
         if not isinstance(func_list, list):
             logger.info("Warning: Expected %s to be a list, got %s. Skipping.", key, type(func_list))
             continue
@@ -38,7 +40,7 @@ def check_resources(merged_functions, site_resources):
             total_required_vcpu += int(func.get("nf-vcpu", 0))
             total_required_ram += int(func.get("nf-memory", 0))
             total_required_storage += int(func.get("nf-storage", 0))
-
+    logger.info("TODO: Remove this log")
     # Calculate total available resources from site resources.
     # total_available_vcpu = 0
     # total_available_ram = 0

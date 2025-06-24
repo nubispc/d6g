@@ -19,8 +19,8 @@ def fetch_service_catalog_info(funtions_graph_name = "apps", data = None):
 
         # Parse the JSON response into dictionary
         functions_info = response.json()
-        logger.error(f"Received from SC -> {functions_info}")
-        return functions_info
+        logger.info(f"Received from SC -> {functions_info}")
+        return functions_info["file_content"] if "file_content" in functions_info else None
     except requests.RequestException as e:
         logger.error(f"Error making request to service catalog: {e}")
         return None

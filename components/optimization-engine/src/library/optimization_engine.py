@@ -3,7 +3,7 @@
 # Python Modules
 import json
 import logging
-
+import yaml
 # Local Modules
 import library.translator as translator
 
@@ -40,7 +40,8 @@ def optimization_engine(data, d6g_site):
 
     # Fetch VNF data from Service Catalog
     logger.info("Fetching functions information from the Service Catalog module...")
-    function_info = functions.fetch_service_catalog_info(funtions_graph_name = "apps", data = data)
+    # TODO: Do we really want to have a hardcoded graph name here?
+    function_info = functions.fetch_service_catalog_info(funtions_graph_name = "apps.nf.yaml", data = data)
     if function_info is None:
         logger.info("Error: Failed to fetch function information, check configuration.")
         error_payload = {"Error": "Failed to fetch function information, check configuration."}
@@ -48,10 +49,10 @@ def optimization_engine(data, d6g_site):
     else:
         logger.info("Function information fetched successfully from the Service Catalog module.")
 
+    function_info = yaml.safe_load(function_info)
     # Fetch topology from Topology Module
     logger.info("Fetching topology from Topology module...")
     topologyGraph, domains, site_resources = topology.fetch_d6g_site_info(d6g_site)
-    logger.info("Domains" + str(domains))
     if topologyGraph is None:
         logger.info("Error: Failed to fetch topology, check configuration.")
         error_payload = {"Error": "Failed to fetch topology, check configuration."}
@@ -86,7 +87,7 @@ def optimization_engine(data, d6g_site):
         error_payload = {"Failed": "The local region does not have enough resources to host the service. Relaying service request to the next region."}
         return json.dumps(error_payload).encode('utf-8')
     
-    
+    logger.info("Checking if there is only one D6G node in the site...")
     # Check if only one D6G node in site, if yes forward the request to back to the local SO
     if domains == 1:
         logger.info("Success: There is only one D6G node in the site. Forwarding request to the local SO.")
