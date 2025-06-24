@@ -1,0 +1,64 @@
+services:
+  smo-rabbitmq:
+    image: rabbitmq:management
+    container_name: smo-rabbitmq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    restart: unless-stopped
+
+  smo-service-catalog:
+    image: harbor.nbfc.io/desire6g/desire6g-service-catalog:DEFAULTTAG
+    container_name: smo-service-catalog
+    ports:
+      - "8001:8000"
+    environment:
+      - GITHUB_ORG=nubispc
+      - GITHUB_REPO=d6g-sc-store
+      - GITHUB_ACCESS_TOKEN=redacted
+    restart: unless-stopped
+    
+  smo-topology:
+    image: harbor.nbfc.io/desire6g/desire6g-topology:DEFAULTTAG
+    container_name: smo-topology
+    ports:
+      - "8002:8000"
+    restart: unless-stopped
+  
+  smo-service-orchestrator:
+    image: harbor.nbfc.io/desire6g/desire6g-so:DEFAULTTAG
+    container_name: smo-service-orchestrator
+    ports:
+      - "8000:8000"
+    environment:
+      - TOPOLOGY_MODULE_HOST=smo-topology
+      - TOPOLOGY_MODULE_PORT=8000
+      - SERVICE_CATALOG_HOST=smo-service-catalog
+      - SERVICE_CATALOG_PORT=8000
+      - MESSAGING_SYSTEM=rabbitmq
+      - RABBITMQ_HOST=smo-rabbitmq
+      - RABBITMQ_MAX_RETRIES=150
+      - INPUT_TOPIC=input_topic
+      - FINAL_TOPIC=output_topic
+    restart: unless-stopped
+
+  smo-optimization-engine:
+    image: harbor.nbfc.io/desire6g/desire6g-oe:DEFAULTTAG
+    container_name: smo-optimization-engine
+    environment:
+      - RABBITMQ_HOST=smo-rabbitmq
+      - INPUT_TOPIC=input_topic
+      - OUTPUT_TOPIC=output_topic
+      - KAFKA_BOOTSTRAP_SERVERS=localhost
+      - SITE=SITEID1
+      - TOPOLOGY_MODULE_HOST=smo-topology
+      - TOPOLOGY_MODULE_PORT=8000
+      - SERVICE_CATALOG_HOST=smo-service-catalog
+      - SERVICE_CATALOG_PORT=8000
+    depends_on:
+      - smo-rabbitmq
+    restart: unless-stopped
+
+networks:
+  default:
+    name: d6g-smo-network
