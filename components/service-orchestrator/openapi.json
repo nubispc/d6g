@@ -171,7 +171,7 @@
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "string",
+                            "type": "integer",
                             "title": "Request Id"
                         }
                     }
