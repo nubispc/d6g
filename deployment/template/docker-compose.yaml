@@ -8,25 +8,25 @@ services:
     restart: unless-stopped
 
   smo-service-catalog:
-    image: harbor.nbfc.io/desire6g/desire6g-service-catalog:DEFAULTTAG
+    image: IMAGE_PREFIXdesire6g-service-catalog:DEFAULTTAG
     container_name: smo-service-catalog
     ports:
       - "8001:8000"
     environment:
       - GITHUB_ORG=nubispc
       - GITHUB_REPO=d6g-sc-store
-      - GITHUB_ACCESS_TOKEN=redacted
+      - PLACEHOLDER=redacted
     restart: unless-stopped
     
   smo-topology:
-    image: harbor.nbfc.io/desire6g/desire6g-topology:DEFAULTTAG
+    image: IMAGE_PREFIXdesire6g-topology:DEFAULTTAG
     container_name: smo-topology
     ports:
       - "8002:8000"
     restart: unless-stopped
   
   smo-service-orchestrator:
-    image: harbor.nbfc.io/desire6g/desire6g-so:DEFAULTTAG
+    image: IMAGE_PREFIXdesire6g-so:DEFAULTTAG
     container_name: smo-service-orchestrator
     ports:
       - "8000:8000"
@@ -43,7 +43,7 @@ services:
     restart: unless-stopped
 
   smo-optimization-engine:
-    image: harbor.nbfc.io/desire6g/desire6g-oe:DEFAULTTAG
+    image: IMAGE_PREFIXdesire6g-oe:DEFAULTTAG
     container_name: smo-optimization-engine
     environment:
       - RABBITMQ_HOST=smo-rabbitmq
