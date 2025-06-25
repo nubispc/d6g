@@ -22,3 +22,5 @@ To run this component, the user must define the following ENV variables:
 - `GITHUB_ORG`: The Github organization owning the Catalog repository
 - `GITHUB_REPO`: The Github repository used as a storage backend for the Catalog
 - `GITHUB_ACCESS_TOKEN`: A Github Access Token with read & write privileges to the Catalog repository
+
+If any of the listed variables are not set, the Service Catalog will fallback to a local storage backend.

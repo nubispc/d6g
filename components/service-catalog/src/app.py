@@ -1,7 +1,6 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
 import os
-from library.github import GithubCatalog
-from library import FileType, SERVICE_GRAPH_FOLDER, NETWORK_FUNCTION_FOLDER
+from library.catalog import get_catalog, FileType, SERVICE_GRAPH_FOLDER, NETWORK_FUNCTION_FOLDER
 
 tags_metadata = [
     {
@@ -11,7 +10,7 @@ tags_metadata = [
 ]
 
 app = FastAPI(openapi_tags=tags_metadata)
-ghCatalog = GithubCatalog()
+ghCatalog = get_catalog()
 
 
 @app.get("/catalog/{file_type}", tags=["catalog"])
@@ -38,7 +37,7 @@ async def upload_file(file: UploadFile = File(...)):
     if ghCatalog.file_exists(file.filename, folder):
         raise HTTPException(status_code=400, detail="File already exists")
     ghCatalog.upload_file(file_content, file.filename, folder)
-    return {"message": f"File '{file.filename}' uploaded successfully to GitHub"}
+    return {"message": f"File '{file.filename}' uploaded successfully to catalog"}
 
 
 @app.get("/retrieve/{file_name}", tags=["catalog"])
@@ -72,3 +71,4 @@ async def delete_file(file_name: str):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+    print('hi')
