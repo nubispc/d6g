@@ -1,36 +1,49 @@
 CONTAINER_TOOL ?= docker
 TAG ?= $(shell git describe --dirty --long --always)
 
+.PHONY: all images so sc oe topology help
 .DEFAULT_GOAL: images
 
+# Determine if we should push
+ifdef REGISTRY
+PUSH_FLAG = --push
+IMAGE_PREFIX = $(REGISTRY)/
+DEPLOY = GITHUB_ACCESS_TOKEN
+else
+PUSH_FLAG =
+IMAGE_PREFIX =
+DEPLOY = PLACEHOLDER
+endif
+
 so:
-	$(CONTAINER_TOOL) build --push -t harbor.nbfc.io/desire6g/desire6g-so:$(TAG) -f components/service-orchestrator/Dockerfile components/service-orchestrator
+	$(CONTAINER_TOOL) build $(PUSH_FLAG) -t $(IMAGE_PREFIX)desire6g-so:$(TAG) -f components/service-orchestrator/Dockerfile components/service-orchestrator
 
 sc:
-	$(CONTAINER_TOOL) build --push -t harbor.nbfc.io/desire6g/desire6g-service-catalog:$(TAG) -f components/service-catalog/Dockerfile components/service-catalog
+	$(CONTAINER_TOOL) build $(PUSH_FLAG) -t $(IMAGE_PREFIX)desire6g-service-catalog:$(TAG) -f components/service-catalog/Dockerfile components/service-catalog
 
 oe:
-	$(CONTAINER_TOOL) build --push -t harbor.nbfc.io/desire6g/desire6g-oe:$(TAG) -f components/optimization-engine/Dockerfile components/optimization-engine
+	$(CONTAINER_TOOL) build $(PUSH_FLAG) -t $(IMAGE_PREFIX)desire6g-oe:$(TAG) -f components/optimization-engine/Dockerfile components/optimization-engine
 
 topology:
-	$(CONTAINER_TOOL) build --push -t harbor.nbfc.io/desire6g/desire6g-topology:$(TAG) -f components/topology/Dockerfile components/topology
+	$(CONTAINER_TOOL) build $(PUSH_FLAG) -t $(IMAGE_PREFIX)desire6g-topology:$(TAG) -f components/topology/Dockerfile components/topology
 
 images: so sc oe topology
-	@echo "Images built and pushed successfully:"
-	@echo "- harbor.nbfc.io/desire6g/desire6g-so:$(TAG)"
-	@echo "- harbor.nbfc.io/desire6g/desire6g-service-catalog:$(TAG)"
-	@echo "- harbor.nbfc.io/desire6g/desire6g-oe:$(TAG)"
-	@echo "- harbor.nbfc.io/desire6g/desire6g-topology:$(TAG)"
+	@echo "Images built successfully:"
+	@echo "- $(IMAGE_PREFIX)desire6g-so:$(TAG)"
+	@echo "- $(IMAGE_PREFIX)desire6g-service-catalog:$(TAG)"
+	@echo "- $(IMAGE_PREFIX)desire6g-oe:$(TAG)"
+	@echo "- $(IMAGE_PREFIX)desire6g-topology:$(TAG)"
+	@if [ -n "$(REGISTRY)" ]; then echo "Images pushed to: $(REGISTRY)"; else echo "Note: Images were not pushed (REGISTRY is unset)"; fi
 
 deploy:
 	@rm -fr deployment/deploy
 	@cp -r deployment/template deployment/deploy
 	@rm -f deployment/deploy/docker-compose.yaml
-	@sed -i "s|DEFAULTTAG|$(TAG)|g" deployment/deploy/*.yaml
+	@sed -i -e "s|DEFAULTTAG|$(TAG)|g" -e "s|IMAGE_PREFIX|$(IMAGE_PREFIX)|g" deployment/deploy/*.yaml
 
 local:
 	@echo "Generating Docker Compose file for local deployment"
 	@rm -fr deployment/compose
 	@mkdir -p deployment/compose
 	@cp deployment/template/docker-compose.yaml deployment/compose
-	@sed -i "s|DEFAULTTAG|$(TAG)|g" deployment/compose/docker-compose.yaml
+	@sed -i -e "s|DEFAULTTAG|$(TAG)|g" -e "s|IMAGE_PREFIX|$(IMAGE_PREFIX)|g" -e "s|PLACEHOLDER|$(DEPLOY)|g" deployment/compose/docker-compose.yaml
